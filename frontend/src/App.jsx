@@ -1,34 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react"
+import api from "./services/api"
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [livros, setLivros] = useState([])
+
+  const [titulo, setTitulo] = useState("")
+  const [autor, setAutor] = useState("")
+  const [anoPublicacao, setAnoPublicacao] = useState("")
+
+  function carregarLivros() {
+    api.get("/livros")
+      .then(response => {
+        setLivros(response.data)
+      })
+  }
+
+  useEffect(() => {
+    carregarLivros()
+  }, [])
+
+  function salvarLivro(e) {
+    e.preventDefault()
+
+    api.post("/livros", {
+      titulo: titulo,
+      autor: autor,
+      anoPublicacao: Number(anoPublicacao)
+    }).then(() => {
+      setTitulo("")
+      setAutor("")
+      setAnoPublicacao("")
+      carregarLivros()
+    })
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div style={{ padding: "20px" }}>
+      <h1>📚 Biblioteca</h1>
+
+      {/* FORMULÁRIO */}
+      <form onSubmit={salvarLivro}>
+        <input
+          placeholder="Título"
+          value={titulo}
+          onChange={e => setTitulo(e.target.value)}
+        />
+
+        <input
+          placeholder="Autor"
+          value={autor}
+          onChange={e => setAutor(e.target.value)}
+        />
+
+        <input
+          placeholder="Ano de publicação"
+          value={anoPublicacao}
+          onChange={e => setAnoPublicacao(e.target.value)}
+        />
+
+        <button type="submit">Salvar</button>
+      </form>
+
+      <hr />
+
+      {/* LISTA */}
+      {livros.map(livro => (
+        <div key={livro.id}>
+          <strong>{livro.titulo}</strong> — {livro.autor}
+        </div>
+      ))}
+    </div>
   )
 }
 

@@ -20,9 +20,9 @@ public class SecurityConfig {
                                 "/livros/**",
                                 "/emprestimos/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
-                .httpBasic();
+                .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }
