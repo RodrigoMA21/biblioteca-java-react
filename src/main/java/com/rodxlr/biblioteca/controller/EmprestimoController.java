@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -48,5 +49,30 @@ public class EmprestimoController {
     @GetMapping
     public ResponseEntity<?> listar() {
         return ResponseEntity.ok(emprestimoRepository.findAll());
+    }
+    @PutMapping("/devolver/{emprestimoId}")
+    public ResponseEntity<?> devolverLivro(@PathVariable Long emprestimoId) {
+
+        Optional<Emprestimo> emprestimoOpt = emprestimoRepository.findById(emprestimoId);
+
+        if (emprestimoOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Empréstimo não encontrado");
+        }
+
+        Emprestimo emprestimo = emprestimoOpt.get();
+
+        if (emprestimo.getDataDevolucao() != null) {
+            return ResponseEntity.badRequest().body("Este livro já foi devolvido");
+        }
+
+        emprestimo.setDataDevolucao(LocalDate.now());
+
+        Livro livro = emprestimo.getLivro();
+        livro.setDisponivel(true);
+        livroRepository.save(livro);
+
+        emprestimoRepository.save(emprestimo);
+
+        return ResponseEntity.ok("Livro devolvido com sucesso");
     }
 }
