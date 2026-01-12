@@ -1,7 +1,7 @@
 import { useState } from "react"
 import api from "./services/api"
 
-function Login({ setLogado }) {
+function Login({ setLogado, irCadastro }) {
   const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
 
@@ -9,18 +9,20 @@ function Login({ setLogado }) {
     e.preventDefault()
 
     api.post("/auth/login", {
-  email: email,
-  senha: senha
-}).then(response => {
-  console.log("Resposta login:", response.data)
-  
-  const token = response.data.token
-  localStorage.setItem("token", token)
+      email: email,
+      senha: senha
+    })
+    .then(response => {
+      console.log("Resposta login:", response.data)
 
-  setLogado(true)   // força trocar tela
-}).catch(() => {
-  alert("Login inválido")
-})
+      const token = response.data.token
+      localStorage.setItem("token", token)
+
+      setLogado(true)   // troca para tela principal
+    })
+    .catch(() => {
+      alert("Login inválido")
+    })
   }
 
   return (
@@ -43,6 +45,13 @@ function Login({ setLogado }) {
 
         <button type="submit">Entrar</button>
       </form>
+
+      <p style={{ marginTop: "10px" }}>
+        Não tem conta?{" "}
+        <button onClick={irCadastro}>
+          Criar conta
+        </button>
+      </p>
     </div>
   )
 }

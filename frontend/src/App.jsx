@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react"
 import api from "./services/api"
 import Login from "./Login"
+import Register from "./Register"
 
 function App() {
 
-  // 🔹 TODOS os hooks sempre no topo
+  // controla login
   const [logado, setLogado] = useState(!!localStorage.getItem("token"))
 
+  // controla qual tela mostrar quando não logado
+  const [telaCadastro, setTelaCadastro] = useState(false)
+
+  // ======= Estados do sistema =======
   const [livros, setLivros] = useState([])
   const [titulo, setTitulo] = useState("")
   const [autor, setAutor] = useState("")
@@ -23,15 +28,29 @@ function App() {
   }
 
   useEffect(() => {
-    if (logado) {
-      carregarLivros()
-    }
+    if (logado) carregarLivros()
   }, [logado])
 
-  // 🔹 Agora sim pode usar return condicional
+  // ======= TELAS NÃO LOGADO =======
   if (!logado) {
-    return <Login setLogado={setLogado} />
+    // Se escolheu cadastro
+    if (telaCadastro) {
+  return (
+    <Register onRegisterSuccess={() => setTelaCadastro(false)} />
+  )
+}
+
+
+    // Senão mostra login
+    return (
+      <Login
+        setLogado={setLogado}
+        irCadastro={() => setTelaCadastro(true)}
+      />
+    )
   }
+
+  // ======= APP PRINCIPAL LOGADO =======
 
   function editarLivro(livro) {
     setIdEmEdicao(livro.id)
