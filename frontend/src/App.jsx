@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react"
 import api from "./services/api"
+import Login from "./Login"
 
 function App() {
 
-  const [livros, setLivros] = useState([])
+  // 🔹 TODOS os hooks sempre no topo
+  const [logado, setLogado] = useState(!!localStorage.getItem("token"))
 
+  const [livros, setLivros] = useState([])
   const [titulo, setTitulo] = useState("")
   const [autor, setAutor] = useState("")
   const [anoPublicacao, setAnoPublicacao] = useState("")
@@ -12,14 +15,23 @@ function App() {
 
   function carregarLivros() {
     api.get("/livros")
-      .then(response => {
-        setLivros(response.data)
+      .then(response => setLivros(response.data))
+      .catch(() => {
+        localStorage.removeItem("token")
+        setLogado(false)
       })
   }
 
   useEffect(() => {
-    carregarLivros()
-  }, [])
+    if (logado) {
+      carregarLivros()
+    }
+  }, [logado])
+
+  // 🔹 Agora sim pode usar return condicional
+  if (!logado) {
+    return <Login setLogado={setLogado} />
+  }
 
   function editarLivro(livro) {
     setIdEmEdicao(livro.id)
@@ -39,8 +51,8 @@ function App() {
     e.preventDefault()
 
     const dados = {
-      titulo: titulo,
-      autor: autor,
+      titulo,
+      autor,
       anoPublicacao: Number(anoPublicacao),
       disponivel: true
     }
@@ -62,70 +74,34 @@ function App() {
 
   function excluirLivro(id) {
     api.delete(`/livros/${id}`)
-      .then(() => {
-        carregarLivros()
-      })
+      .then(() => carregarLivros())
   }
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>📚 Biblioteca</h1>
 
-      {/* FORMULÁRIO */}
+      <button onClick={() => {
+        localStorage.removeItem("token")
+        setLogado(false)
+      }}>
+        Sair
+      </button>
+
       <form onSubmit={salvarLivro}>
-        <input
-          placeholder="Título"
-          value={titulo}
-          onChange={e => setTitulo(e.target.value)}
-        />
-
-        <input
-          placeholder="Autor"
-          value={autor}
-          onChange={e => setAutor(e.target.value)}
-        />
-
-        <input
-          placeholder="Ano de publicação"
-          value={anoPublicacao}
-          onChange={e => setAnoPublicacao(e.target.value)}
-        />
-
-        <button type="submit">
-          {idEmEdicao ? "Atualizar" : "Salvar"}
-        </button>
-
-        {idEmEdicao && (
-          <button 
-            type="button" 
-            onClick={limparFormulario}
-            style={{ marginLeft: "10px" }}
-          >
-            Cancelar
-          </button>
-        )}
+        <input placeholder="Título" value={titulo} onChange={e => setTitulo(e.target.value)} />
+        <input placeholder="Autor" value={autor} onChange={e => setAutor(e.target.value)} />
+        <input placeholder="Ano" value={anoPublicacao} onChange={e => setAnoPublicacao(e.target.value)} />
+        <button type="submit">{idEmEdicao ? "Atualizar" : "Salvar"}</button>
       </form>
 
       <hr />
 
-      {/* LISTA */}
       {livros.map(livro => (
-        <div key={livro.id} style={{ marginBottom: "10px" }}>
+        <div key={livro.id}>
           <strong>{livro.titulo}</strong> — {livro.autor} ({livro.anoPublicacao})
-
-          <button 
-            style={{ marginLeft: "10px" }}
-            onClick={() => editarLivro(livro)}
-          >
-            Editar
-          </button>
-
-          <button 
-            style={{ marginLeft: "10px" }}
-            onClick={() => excluirLivro(livro.id)}
-          >
-            Excluir
-          </button>
+          <button onClick={() => editarLivro(livro)}>Editar</button>
+          <button onClick={() => excluirLivro(livro.id)}>Excluir</button>
         </div>
       ))}
     </div>
