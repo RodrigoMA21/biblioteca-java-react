@@ -29,13 +29,14 @@ public class AuthController {
 
         boolean senhaOk = service.validarSenha(dto.getSenha(), usuario.getSenha());
 
-        if(!senhaOk) {
+        if (!senhaOk) {
             return ResponseEntity.status(401).build();
         }
 
         String token = jwtService.gerarToken(usuario.getEmail());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        // retornando token + role
+        return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getRole()));
     }
 
 

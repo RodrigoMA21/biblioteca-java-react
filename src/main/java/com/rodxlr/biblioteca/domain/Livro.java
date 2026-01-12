@@ -1,6 +1,5 @@
 package com.rodxlr.biblioteca.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,5 +21,7 @@ public class Livro {
     private Integer anoPublicacao;
 
     private Boolean disponivel = true;
-}
 
+    // ======= URL do PDF =======
+    private String pdfUrl;
+}

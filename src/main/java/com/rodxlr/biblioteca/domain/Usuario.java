@@ -21,5 +21,6 @@ public class Usuario {
 
     private String nome;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER; // default USER
 }

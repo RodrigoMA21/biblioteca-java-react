@@ -1,28 +1,29 @@
-import { useState } from "react"
-import api from "./services/api"
+import { useState } from "react";
+import api from "./services/api";
 
-function Login({ setLogado, irCadastro }) {
-  const [email, setEmail] = useState("")
-  const [senha, setSenha] = useState("")
+function Login({ setUser, irCadastro }) {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
 
   function fazerLogin(e) {
-    e.preventDefault()
+    e.preventDefault();
 
-    api.post("/auth/login", {
-      email: email,
-      senha: senha
-    })
-    .then(response => {
-      console.log("Resposta login:", response.data)
+    api.post("/auth/login", { email, senha })
+      .then(response => {
+        console.log("Resposta login:", response.data);
 
-      const token = response.data.token
-      localStorage.setItem("token", token)
+        const { token, role } = response.data;
 
-      setLogado(true)   // troca para tela principal
-    })
-    .catch(() => {
-      alert("Login inválido")
-    })
+        // salva token + role no localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
+
+        // atualiza estado global/contexto
+        setUser({ token, role });
+      })
+      .catch(() => {
+        alert("Login inválido");
+      });
   }
 
   return (
@@ -53,7 +54,7 @@ function Login({ setLogado, irCadastro }) {
         </button>
       </p>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
