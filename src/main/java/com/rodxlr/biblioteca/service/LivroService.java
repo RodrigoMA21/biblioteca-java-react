@@ -8,6 +8,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +39,11 @@ public class LivroService {
         return repository.save(livroAtualizado);
     }
 
+    public Livro buscarPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+    }
+
     // ======= Upload de PDF =======
     public void uploadPdf(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().equals("application/pdf")) {
@@ -48,8 +54,7 @@ public class LivroService {
             Files.createDirectories(uploadDir);
         }
 
-        Livro livro = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
+        Livro livro = buscarPorId(id);
 
         // Remove PDF antigo
         if (livro.getPdfUrl() != null) {
@@ -61,17 +66,59 @@ public class LivroService {
         Path filePath = uploadDir.resolve(filename);
         file.transferTo(filePath.toFile());
 
-        livro.setPdfUrl("/livros/download/" + filename);
+        livro.setPdfUrl("/livros/pdf/" + filename); // URL via endpoint seguro
         repository.save(livro);
     }
 
-    // ======= Download de PDF =======
+    // ======= Upload de Capa =======
+    public void uploadCapa(Long id, MultipartFile file) throws Exception {
+        if (!file.getContentType().startsWith("image/")) {
+            throw new IllegalArgumentException("Apenas arquivos de imagem são permitidos");
+        }
+
+        Path capaDir = uploadDir.resolve("capas");
+        if (!Files.exists(capaDir)) {
+            Files.createDirectories(capaDir);
+        }
+
+        Livro livro = buscarPorId(id);
+
+        // Remove capa antiga
+        if (livro.getCapaUrl() != null) {
+            try {
+                String nomeArquivo = Paths.get(new URI(livro.getCapaUrl()).getPath()).getFileName().toString();
+                Path antigo = capaDir.resolve(nomeArquivo);
+                Files.deleteIfExists(antigo);
+            } catch (Exception ignored) {}
+        }
+
+        String filename = "capa_" + id + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path filePath = capaDir.resolve(filename);
+        file.transferTo(filePath.toFile());
+
+        livro.setCapaUrl("/livros/capa/" + filename); // URL via endpoint seguro
+        repository.save(livro);
+    }
+
+    // ======= Download seguro de PDF =======
     public Resource baixarPdf(String filename) throws Exception {
         Path filePath = uploadDir.resolve(filename);
         Resource resource = new UrlResource(filePath.toUri());
 
         if (!resource.exists() || !resource.isReadable()) {
             throw new RuntimeException("Arquivo não encontrado");
+        }
+
+        return resource;
+    }
+
+    // ======= Download seguro de capa =======
+    public Resource baixarCapa(String filename) throws Exception {
+        Path filePath = uploadDir.resolve("capas").resolve(filename);
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) {
+            throw new RuntimeException("Capa não encontrada");
         }
 
         return resource;

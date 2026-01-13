@@ -4,12 +4,15 @@ import com.rodxlr.biblioteca.domain.Livro;
 import com.rodxlr.biblioteca.service.LivroService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -20,6 +23,7 @@ public class LivroController {
 
     private final LivroService service;
 
+    // ======= CRUD básico =======
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Livro> cadastrar(@RequestBody Livro livro) {
@@ -45,6 +49,7 @@ public class LivroController {
         return ResponseEntity.noContent().build();
     }
 
+    // ======= Upload PDF =======
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/upload")
     public ResponseEntity<?> uploadPdf(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
@@ -56,16 +61,50 @@ public class LivroController {
         }
     }
 
-    @GetMapping("/download/{filename:.+}")
+    // ======= Download seguro de PDF =======
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/pdf/{filename:.+}")
     public ResponseEntity<Resource> downloadPdf(@PathVariable String filename) {
         try {
             Resource resource = service.baixarPdf(filename);
+
+            String contentType = "application/pdf";
             return ResponseEntity.ok()
-                    .header("Content-Disposition", "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
+    // ======= Upload de capa =======
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{id}/uploadCapa")
+    public ResponseEntity<?> uploadCapa(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            service.uploadCapa(id, file);
+            return ResponseEntity.ok("Capa enviada com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Erro ao enviar capa: " + e.getMessage());
+        }
+    }
+
+    // ======= Servir capa segura =======
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/capa/{filename:.+}")
+    public ResponseEntity<Resource> serveCapa(@PathVariable String filename) {
+        try {
+            Resource resource = service.baixarCapa(filename);
+
+            String contentType = Files.probeContentType(Paths.get(resource.getFile().getAbsolutePath()));
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
                     .body(resource);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
         }
     }
 }
-

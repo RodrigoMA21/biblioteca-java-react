@@ -24,4 +24,7 @@ public class Livro {
 
     // ======= URL do PDF =======
     private String pdfUrl;
+
+    // ======= URL da capa =======
+    private String capaUrl;
 }
