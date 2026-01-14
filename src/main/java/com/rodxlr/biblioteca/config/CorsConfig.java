@@ -16,6 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:5173",
+                                "https://biblioteca-java-react.onrender.com",
                                 "https://biblioteca-java-react-1.onrender.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
