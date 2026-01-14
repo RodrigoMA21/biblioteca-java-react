@@ -18,37 +18,28 @@ function App() {
   const [idEmEdicao, setIdEmEdicao] = useState(null);
 
   // ======= Carregar livros =======
-  async function carregarLivros() {
-    try {
-      const res = await api.get("/livros", {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      const livrosComCapa = await Promise.all(
-        res.data.map(async livro => {
-          if (livro.capaUrl) {
-            try {
-              const blob = await fetch(
-                `${api.defaults.baseURL}/uploads/capas/${livro.capaUrl.split("/").pop()}`,
-                { headers: { Authorization: `Bearer ${user.token}` } }
-              ).then(r => r.blob());
-              livro.capaBlobUrl = URL.createObjectURL(blob);
-            } catch {
-              livro.capaBlobUrl = null;
-            }
-          }
-          return livro;
-        })
-      );
-      setLivros(livrosComCapa);
-    } catch {
-      alert("Erro ao carregar livros. Faça login novamente.");
-      sair();
-    }
-  }
+async function carregarLivros() {
+  try {
+    const res = await api.get("/livros", {
+      headers: { Authorization: `Bearer ${user.token}` }
+    });
 
-  useEffect(() => {
-    if (user.token) carregarLivros();
-  }, [user.token]);
+    const livrosComCapa = res.data.map(livro => {
+      // Se tiver capa, gera URL pública
+      livro.capaBlobUrl = livro.capaUrl
+        ? `${api.defaults.baseURL}/uploads/capas/${livro.capaUrl.split("/").pop()}`
+        : null;
+
+      return livro;
+    });
+
+    setLivros(livrosComCapa);
+  } catch {
+    alert("Erro ao carregar livros. Faça login novamente.");
+    sair();
+  }
+}
+
 
   // ======= Logout =======
   function sair() {
