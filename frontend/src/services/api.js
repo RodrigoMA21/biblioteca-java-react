@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080"
+  baseURL: "https://biblioteca-java-react.onrender.com"
 });
 
 // 👉 Interceptor: adiciona token em todas requisições
