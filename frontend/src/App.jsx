@@ -10,7 +10,6 @@ function App() {
   });
 
   const [telaCadastro, setTelaCadastro] = useState(false);
-
   const [livros, setLivros] = useState([]);
   const [titulo, setTitulo] = useState("");
   const [autor, setAutor] = useState("");
@@ -18,28 +17,32 @@ function App() {
   const [idEmEdicao, setIdEmEdicao] = useState(null);
 
   // ======= Carregar livros =======
-async function carregarLivros() {
-  try {
-    const res = await api.get("/livros", {
-      headers: { Authorization: `Bearer ${user.token}` }
-    });
+  async function carregarLivros() {
+    try {
+      const res = await api.get("/livros", {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
 
-    const livrosComCapa = res.data.map(livro => {
-      // Se tiver capa, gera URL pública
-      livro.capaBlobUrl = livro.capaUrl
-        ? `${api.defaults.baseURL}/uploads/capas/${livro.capaUrl.split("/").pop()}`
-        : null;
+      const livrosComCapa = res.data.map(livro => {
+        // Se tiver capa, gera URL completa para o backend
+        livro.capaBlobUrl = livro.capaUrl
+          ? `${api.defaults.baseURL}${livro.capaUrl}`
+          : null;
 
-      return livro;
-    });
+        return livro;
+      });
 
-    setLivros(livrosComCapa);
-  } catch {
-    alert("Erro ao carregar livros. Faça login novamente.");
-    sair();
+      setLivros(livrosComCapa);
+    } catch {
+      alert("Erro ao carregar livros. Faça login novamente.");
+      sair();
+    }
   }
-}
 
+  // Carrega livros ao montar o componente
+  useEffect(() => {
+    if (user.token) carregarLivros();
+  }, [user.token]);
 
   // ======= Logout =======
   function sair() {
