@@ -96,7 +96,7 @@ public class LivroService {
         Path filePath = capaDir.resolve(filename);
         file.transferTo(filePath.toFile());
 
-        livro.setCapaUrl("/livros/capa/" + filename); // URL via endpoint seguro
+        livro.setCapaUrl("/uploads/capas/" + filename); // URL pública
         repository.save(livro);
     }
 
