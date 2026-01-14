@@ -28,7 +28,7 @@ function App() {
           if (livro.capaUrl) {
             try {
               const blob = await fetch(
-                `${api.defaults.baseURL}/livros/capa/${livro.capaUrl.split("/").pop()}`,
+                `${api.defaults.baseURL}/uploads/capas/${livro.capaUrl.split("/").pop()}`,
                 { headers: { Authorization: `Bearer ${user.token}` } }
               ).then(r => r.blob());
               livro.capaBlobUrl = URL.createObjectURL(blob);
