@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Cria instância do Axios apontando para o backend no Render
 const api = axios.create({
-  baseURL: "https://biblioteca-java-react-1.onrender.com" // ajuste para seu backend
+  baseURL: "https://biblioteca-java-react.onrender.com" // ajuste para seu backend
 });
 
 // 👉 Interceptor: adiciona token em todas requisições, exceto registro/login
