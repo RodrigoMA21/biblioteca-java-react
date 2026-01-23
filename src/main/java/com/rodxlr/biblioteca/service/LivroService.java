@@ -89,7 +89,10 @@ public class LivroService {
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 Map.of(
-                        "folder", "biblioteca/capas",
+                        "folder",
+                        "biblioteca/pdfs",
+                        "resource_type",
+                        "raw",
                         "use_filename", true,
                         "unique_filename", false
                 )
