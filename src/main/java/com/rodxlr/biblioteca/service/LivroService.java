@@ -17,7 +17,7 @@ public class LivroService {
     private final LivroRepository repository;
     private final Cloudinary cloudinary;
 
-    // ===== CRUD básico =====
+    // ===== CRUD =====
 
     public Livro salvar(Livro livro) {
         return repository.save(livro);
@@ -41,7 +41,7 @@ public class LivroService {
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
     }
 
-    // ===== Upload PDF para Cloudinary =====
+    // ===== Upload PDF =====
 
     public void uploadPdf(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().equals("application/pdf")) {
@@ -58,18 +58,17 @@ public class LivroService {
                 )
         );
 
+        // URL original do Cloudinary
         String url = uploadResult.get("secure_url").toString();
 
-        // 🔹 Força abrir no navegador (inline) em vez de download
-        String nomeArquivo = livro.getTitulo().replace(" ", "_") + ".pdf";
-        String pdfFinalUrl = url.replace("/upload/", "/upload/fl_attachment:false/" + nomeArquivo);
-
+        // Força abrir no navegador (não baixar)
+        String pdfFinalUrl = url.replace("/upload/", "/upload/fl_attachment:false/");
 
         livro.setPdfUrl(pdfFinalUrl);
         repository.save(livro);
     }
 
-    // ===== Upload Capa para Cloudinary =====
+    // ===== Upload Capa =====
 
     public void uploadCapa(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().startsWith("image/")) {
