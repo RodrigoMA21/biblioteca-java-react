@@ -58,13 +58,9 @@ public class LivroService {
                 )
         );
 
-        // URL original do Cloudinary
-        String url = uploadResult.get("secure_url").toString();
+        String pdfUrl = uploadResult.get("secure_url").toString();
 
-        // Força abrir no navegador (não baixar)
-        String pdfFinalUrl = url.replace("/upload/", "/upload/fl_attachment:false/");
-
-        livro.setPdfUrl(pdfFinalUrl);
+        livro.setPdfUrl(pdfUrl);
         repository.save(livro);
     }
 
