@@ -17,7 +17,8 @@ public class LivroService {
     private final LivroRepository repository;
     private final Cloudinary cloudinary;
 
-    // ======= CRUD básico =======
+    // ===== CRUD básico =====
+
     public Livro salvar(Livro livro) {
         return repository.save(livro);
     }
@@ -40,7 +41,8 @@ public class LivroService {
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
     }
 
-    // ======= Upload PDF para Cloudinary =======
+    // ===== Upload PDF para Cloudinary =====
+
     public void uploadPdf(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().equals("application/pdf")) {
             throw new IllegalArgumentException("Apenas arquivos PDF são permitidos");
@@ -48,7 +50,6 @@ public class LivroService {
 
         Livro livro = buscarPorId(id);
 
-        // Upload no Cloudinary (resource_type raw para PDF)
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 Map.of(
@@ -57,13 +58,19 @@ public class LivroService {
                 )
         );
 
-        String pdfUrl = uploadResult.get("secure_url").toString();
+        String url = uploadResult.get("secure_url").toString();
 
-        livro.setPdfUrl(pdfUrl);
+        // 🔹 Força abrir no navegador (inline) em vez de download
+        String nomeArquivo = livro.getTitulo().replace(" ", "_") + ".pdf";
+        String pdfFinalUrl = url.replace("/upload/", "/upload/fl_attachment:false/" + nomeArquivo);
+
+
+        livro.setPdfUrl(pdfFinalUrl);
         repository.save(livro);
     }
 
-    // ======= Upload Capa para Cloudinary =======
+    // ===== Upload Capa para Cloudinary =====
+
     public void uploadCapa(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().startsWith("image/")) {
             throw new IllegalArgumentException("Apenas arquivos de imagem são permitidos");
