@@ -61,22 +61,6 @@ public class LivroController {
         }
     }
 
-    // ======= Download seguro de PDF =======
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping("/pdf/{filename:.+}")
-    public ResponseEntity<Resource> downloadPdf(@PathVariable String filename) {
-        try {
-            Resource resource = service.baixarPdf(filename);
-
-            String contentType = "application/pdf";
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .header(HttpHeaders.CONTENT_TYPE, contentType)
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.status(404).build();
-        }
-    }
 
     // ======= Upload de capa =======
     @PreAuthorize("hasRole('ADMIN')")
@@ -91,20 +75,4 @@ public class LivroController {
         }
     }
 
-    // ======= Servir capa segura =======
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @GetMapping("/capa/{filename:.+}")
-    public ResponseEntity<Resource> serveCapa(@PathVariable String filename) {
-        try {
-            Resource resource = service.baixarCapa(filename);
-
-            String contentType = Files.probeContentType(Paths.get(resource.getFile().getAbsolutePath()));
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                    .header(HttpHeaders.CONTENT_TYPE, contentType)
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.status(404).build();
-        }
-    }
 }
