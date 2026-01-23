@@ -54,7 +54,8 @@ public class LivroService {
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/pdfs",
-                        "resource_type", "image"
+                        "resource_type", "image",
+                        "type", "upload"
                 )
         );
 
