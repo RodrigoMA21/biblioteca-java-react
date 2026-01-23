@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -54,22 +56,26 @@ public class LivroService {
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/pdfs",
-                        "resource_type", "raw"
+                        "resource_type", "raw",
+                        "use_filename", true,        // usa o nome original
+                        "unique_filename", false     // não adiciona hash aleatório
                 )
         );
 
         String secureUrl = uploadResult.get("secure_url").toString();
 
-        // força nome correto do arquivo no download
+        // codifica corretamente o nome do arquivo para evitar espaços/acentos inválidos
+        String encodedFilename = URLEncoder.encode(file.getOriginalFilename(), StandardCharsets.UTF_8);
+
+        // força nome correto no download
         String downloadUrl = secureUrl.replace(
                 "/upload/",
-                "/upload/fl_attachment:" + file.getOriginalFilename() + "/"
+                "/upload/fl_attachment:" + encodedFilename + "/"
         );
 
         livro.setPdfUrl(downloadUrl);
         repository.save(livro);
     }
-
 
     // ===== Upload Capa =====
 
@@ -82,7 +88,11 @@ public class LivroService {
 
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
-                Map.of("folder", "biblioteca/capas")
+                Map.of(
+                        "folder", "biblioteca/capas",
+                        "use_filename", true,
+                        "unique_filename", false
+                )
         );
 
         String capaUrl = uploadResult.get("secure_url").toString();
