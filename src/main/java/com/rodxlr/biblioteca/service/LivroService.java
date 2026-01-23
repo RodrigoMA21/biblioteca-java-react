@@ -1,25 +1,21 @@
 package com.rodxlr.biblioteca.service;
 
+import com.cloudinary.Cloudinary;
 import com.rodxlr.biblioteca.domain.Livro;
 import com.rodxlr.biblioteca.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class LivroService {
 
     private final LivroRepository repository;
-    private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads");
+    private final Cloudinary cloudinary;
 
     // ======= CRUD básico =======
     public Livro salvar(Livro livro) {
@@ -44,83 +40,45 @@ public class LivroService {
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
     }
 
-    // ======= Upload de PDF =======
+    // ======= Upload PDF para Cloudinary =======
     public void uploadPdf(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().equals("application/pdf")) {
             throw new IllegalArgumentException("Apenas arquivos PDF são permitidos");
         }
 
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
-        }
-
         Livro livro = buscarPorId(id);
 
-        // Remove PDF antigo
-        if (livro.getPdfUrl() != null) {
-            Path antigo = uploadDir.resolve(Paths.get(livro.getPdfUrl()).getFileName());
-            Files.deleteIfExists(antigo);
-        }
+        // Upload no Cloudinary (resource_type raw para PDF)
+        var uploadResult = cloudinary.uploader().upload(
+                file.getBytes(),
+                Map.of(
+                        "folder", "biblioteca/pdfs",
+                        "resource_type", "raw"
+                )
+        );
 
-        String filename = id + "_" + System.currentTimeMillis() + ".pdf";
-        Path filePath = uploadDir.resolve(filename);
-        file.transferTo(filePath.toFile());
+        String pdfUrl = uploadResult.get("secure_url").toString();
 
-        livro.setPdfUrl("/livros/pdf/" + filename); // URL via endpoint seguro
+        livro.setPdfUrl(pdfUrl);
         repository.save(livro);
     }
 
-    // ======= Upload de Capa =======
+    // ======= Upload Capa para Cloudinary =======
     public void uploadCapa(Long id, MultipartFile file) throws Exception {
         if (!file.getContentType().startsWith("image/")) {
             throw new IllegalArgumentException("Apenas arquivos de imagem são permitidos");
         }
 
-        Path capaDir = uploadDir.resolve("capas");
-        if (!Files.exists(capaDir)) {
-            Files.createDirectories(capaDir);
-        }
-
         Livro livro = buscarPorId(id);
 
-        // Remove capa antiga
-        if (livro.getCapaUrl() != null) {
-            try {
-                String nomeArquivo = Paths.get(new URI(livro.getCapaUrl()).getPath()).getFileName().toString();
-                Path antigo = capaDir.resolve(nomeArquivo);
-                Files.deleteIfExists(antigo);
-            } catch (Exception ignored) {}
-        }
+        var uploadResult = cloudinary.uploader().upload(
+                file.getBytes(),
+                Map.of("folder", "biblioteca/capas")
+        );
 
-        String filename = "capa_" + id + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path filePath = capaDir.resolve(filename);
-        file.transferTo(filePath.toFile());
+        String capaUrl = uploadResult.get("secure_url").toString();
 
-        livro.setCapaUrl("/uploads/capas/" + filename); // URL pública
+        livro.setCapaUrl(capaUrl);
         repository.save(livro);
-    }
-
-    // ======= Download seguro de PDF =======
-    public Resource baixarPdf(String filename) throws Exception {
-        Path filePath = uploadDir.resolve(filename);
-        Resource resource = new UrlResource(filePath.toUri());
-
-        if (!resource.exists() || !resource.isReadable()) {
-            throw new RuntimeException("Arquivo não encontrado");
-        }
-
-        return resource;
-    }
-
-    // ======= Download seguro de capa =======
-    public Resource baixarCapa(String filename) throws Exception {
-        Path filePath = uploadDir.resolve("capas").resolve(filename);
-        Resource resource = new UrlResource(filePath.toUri());
-
-        if (!resource.exists() || !resource.isReadable()) {
-            throw new RuntimeException("Capa não encontrada");
-        }
-
-        return resource;
     }
 }
