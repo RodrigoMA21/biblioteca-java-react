@@ -3,16 +3,12 @@ package com.rodxlr.biblioteca.controller;
 import com.rodxlr.biblioteca.domain.Livro;
 import com.rodxlr.biblioteca.service.LivroService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.List;
 
 @RestController
