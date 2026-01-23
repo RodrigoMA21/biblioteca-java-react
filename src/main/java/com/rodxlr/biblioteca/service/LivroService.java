@@ -44,8 +44,8 @@ public class LivroService {
     // ===== Upload PDF =====
 
     public void uploadPdf(Long id, MultipartFile file) throws Exception {
-        if (!file.getContentType().equals("application/pdf")) {
-            throw new IllegalArgumentException("Apenas arquivos PDF são permitidos");
+        if (file.getContentType() == null || !file.getContentType().equals("application/pdf")) {
+            throw new IllegalArgumentException("Apenas PDF permitido");
         }
 
         Livro livro = buscarPorId(id);
@@ -54,11 +54,11 @@ public class LivroService {
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/pdfs",
-                        "resource_type", "image",
-                        "type", "upload"
+                        "resource_type", "raw"
                 )
         );
 
+        // ⚠️ Use SOMENTE secure_url — sem alterar
         String pdfUrl = uploadResult.get("secure_url").toString();
 
         livro.setPdfUrl(pdfUrl);
