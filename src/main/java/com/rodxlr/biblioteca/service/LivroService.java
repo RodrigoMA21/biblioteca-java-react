@@ -57,8 +57,8 @@ public class LivroService {
                 Map.of(
                         "folder", "biblioteca/pdfs",
                         "resource_type", "raw",
-                        "use_filename", true,        // usa o nome original
-                        "unique_filename", false     // não adiciona hash aleatório
+                        "use_filename", true,
+                        "unique_filename", false
                 )
         );
 
@@ -89,10 +89,8 @@ public class LivroService {
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 Map.of(
-                        "folder",
-                        "biblioteca/pdfs",
-                        "resource_type",
-                        "raw",
+                        "folder", "biblioteca/capas",
+                        "resource_type", "image",
                         "use_filename", true,
                         "unique_filename", false
                 )
