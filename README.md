@@ -73,7 +73,10 @@ Além de compor meu **portfólio profissional**.
 
 ## 📸 Demonstração
 
-*(Em breve: prints e GIFs da aplicação em funcionamento)*
+## 📸 Demonstração
+
+![Tela principal](screenshots/Captura de tela 2026-01-24 194313.png)
+
 
 ---
 
