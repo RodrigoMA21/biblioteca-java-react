@@ -56,27 +56,17 @@ public class LivroService {
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/pdfs",
-                        "resource_type", "image",
+                        "resource_type", "image",  // 🔴 aqui está a chave
                         "use_filename", true,
                         "unique_filename", false
                 )
         );
 
-        String secureUrl = uploadResult.get("secure_url").toString();
+        String pdfUrl = uploadResult.get("secure_url").toString();
 
-        // codifica corretamente o nome do arquivo para evitar espaços/acentos inválidos
-        String encodedFilename = URLEncoder.encode(file.getOriginalFilename(), StandardCharsets.UTF_8);
-
-        // força nome correto no download
-        String downloadUrl = secureUrl.replace(
-                "/upload/",
-                "/upload/fl_attachment:" + encodedFilename + "/"
-        );
-
-        livro.setPdfUrl(downloadUrl);
+        livro.setPdfUrl(pdfUrl);
         repository.save(livro);
     }
-
     // ===== Upload Capa =====
 
     public void uploadCapa(Long id, MultipartFile file) throws Exception {
