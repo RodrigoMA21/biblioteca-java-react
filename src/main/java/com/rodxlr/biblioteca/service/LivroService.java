@@ -64,16 +64,18 @@ public class LivroService {
 
         String secureUrl = uploadResult.get("secure_url").toString();
 
-        String encodedFilename = URLEncoder.encode(file.getOriginalFilename(), StandardCharsets.UTF_8);
+        String original = file.getOriginalFilename();
+        String safeFilename = original.replaceAll("[^a-zA-Z0-9._-]", "_");
 
         String downloadUrl = secureUrl.replace(
                 "/upload/",
-                "/upload/fl_attachment:" + encodedFilename + "/"
+                "/upload/fl_attachment:" + safeFilename + "/"
         );
 
         livro.setPdfUrl(downloadUrl);
         repository.save(livro);
     }
+
     // ===== Upload Capa =====
 
     public void uploadCapa(Long id, MultipartFile file) throws Exception {
