@@ -62,9 +62,16 @@ public class LivroService {
                 )
         );
 
-        String pdfUrl = uploadResult.get("secure_url").toString();
+        String secureUrl = uploadResult.get("secure_url").toString();
 
-        livro.setPdfUrl(pdfUrl);
+        String encodedFilename = URLEncoder.encode(file.getOriginalFilename(), StandardCharsets.UTF_8);
+
+        String downloadUrl = secureUrl.replace(
+                "/upload/",
+                "/upload/fl_attachment:" + encodedFilename + "/"
+        );
+
+        livro.setPdfUrl(downloadUrl);
         repository.save(livro);
     }
     // ===== Upload Capa =====
