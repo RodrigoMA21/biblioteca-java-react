@@ -52,29 +52,26 @@ public class LivroService {
 
         Livro livro = buscarPorId(id);
 
+        String originalName = file.getOriginalFilename()
+                .replace(" ", "_"); // evita espaços problemáticos
+
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/pdfs",
                         "resource_type", "raw",
                         "use_filename", true,
-                        "unique_filename", false
+                        "unique_filename", false,
+                        "filename_override", originalName   // 👈 força nome real
                 )
         );
 
-        String secureUrl = uploadResult.get("secure_url").toString();
+        String pdfUrl = uploadResult.get("secure_url").toString();
 
-        String original = file.getOriginalFilename();
-        String safeFilename = original.replaceAll("[^a-zA-Z0-9._-]", "_");
-
-        String downloadUrl = secureUrl.replace(
-                "/upload/",
-                "/upload/fl_attachment:" + safeFilename + "/"
-        );
-
-        livro.setPdfUrl(downloadUrl);
+        livro.setPdfUrl(pdfUrl);
         repository.save(livro);
     }
+
 
     // ===== Upload Capa =====
 
