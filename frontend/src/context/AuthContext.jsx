@@ -1,13 +1,30 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import api from "../services/api";
 
 const AuthContext = createContext(null);
 
+function getInitialUser() {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const nome = localStorage.getItem("nome");
+  return { token, role, nome: nome || "" };
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState({
-    token: localStorage.getItem("token"),
-    role: localStorage.getItem("role"),
-    nome: localStorage.getItem("nome") || "",
-  });
+  const [user, setUser] = useState(getInitialUser);
+
+  useEffect(() => {
+    if (user.token && !user.nome) {
+      api.get("/auth/me")
+        .then((res) => {
+          const { nome, role } = res.data;
+          localStorage.setItem("nome", nome);
+          localStorage.setItem("role", role);
+          setUser((prev) => ({ ...prev, nome, role }));
+        })
+        .catch(() => {});
+    }
+  }, []);
 
   function login(token, role, nome) {
     localStorage.setItem("token", token);

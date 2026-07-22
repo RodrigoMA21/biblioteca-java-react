@@ -52,17 +52,14 @@ public class LivroService {
 
         Livro livro = buscarPorId(id);
 
-        String originalName = file.getOriginalFilename()
-                .replace(" ", "_"); // evita espaços problemáticos
+        String nomeUnico = System.currentTimeMillis() + "_" + file.getOriginalFilename().replace(" ", "_");
 
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/pdfs",
                         "resource_type", "raw",
-                        "use_filename", true,
-                        "unique_filename", false,
-                        "filename_override", originalName   // 👈 força nome real
+                        "filename_override", nomeUnico
                 )
         );
 
@@ -82,13 +79,14 @@ public class LivroService {
 
         Livro livro = buscarPorId(id);
 
+        String nomeUnico = System.currentTimeMillis() + "_" + file.getOriginalFilename().replace(" ", "_");
+
         var uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 Map.of(
                         "folder", "biblioteca/capas",
                         "resource_type", "image",
-                        "use_filename", true,
-                        "unique_filename", false
+                        "filename_override", nomeUnico
                 )
         );
 

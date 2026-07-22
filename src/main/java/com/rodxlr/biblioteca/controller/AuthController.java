@@ -40,6 +40,18 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getRole(), usuario.getNome()));
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, String>> me() {
+        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Usuario usuario = service.buscarPorEmail(email);
+        return ResponseEntity.ok(Map.of(
+            "nome", usuario.getNome(),
+            "email", usuario.getEmail(),
+            "role", usuario.getRole().name()
+        ));
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> body) {
         String email = body.get("email");
