@@ -147,12 +147,12 @@ export default function Sidebar({ open, onClose, mobile }) {
             mb: 0.25,
           }}
         >
-          {user.nome || user.email || (user.role === "ADMIN" ? "Administrador" : "Usuário")}
+          {user.guest ? "Convidado" : (user.nome || user.email || (user.role === "ADMIN" ? "Administrador" : "Usuário"))}
         </Typography>
         <Typography
           sx={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}
         >
-          {user.role === "ADMIN" ? "Administrador" : "Usuário"}
+          {user.guest ? "Acesso limitado" : (user.role === "ADMIN" ? "Administrador" : "Usuário")}
         </Typography>
       </Box>
     </Box>

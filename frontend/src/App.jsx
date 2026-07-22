@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 function AppContent() {
   const { user } = useAuth();
 
-  if (!user.token) {
+  if (!user.token && !user.guest) {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -27,6 +27,7 @@ function AppContent() {
     <DashboardLayout>
       <Routes>
         <Route path="/" element={<Navigate to="/livros" replace />} />
+        <Route path="/login" element={<Navigate to="/livros" replace />} />
         <Route path="/livros" element={<Livros />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

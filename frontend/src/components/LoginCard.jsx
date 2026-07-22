@@ -10,13 +10,14 @@ import {
   IconButton,
   CircularProgress,
   Alert,
+  Divider,
 } from "@mui/material";
-import { Visibility, VisibilityOff, EmailOutlined, LockOutlined } from "@mui/icons-material";
+import { Visibility, VisibilityOff, EmailOutlined, LockOutlined, PersonOutline } from "@mui/icons-material";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 export default function LoginCard() {
-  const { login } = useAuth();
+  const { login, entrarComoConvidado } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -33,7 +34,6 @@ export default function LoginCard() {
       const response = await api.post("/auth/login", { email, senha });
       const { token, role, nome } = response.data;
       login(token, role, nome);
-      navigate("/livros");
     } catch {
       setErro("Email ou senha inválidos.");
     } finally {
@@ -150,6 +150,24 @@ export default function LoginCard() {
           Criar conta
         </Link>
       </Typography>
+
+      <Divider sx={{ my: 2.5, color: "text.disabled", fontSize: "0.8rem" }}>
+        ou
+      </Divider>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        size="large"
+        startIcon={<PersonOutline />}
+        onClick={() => {
+          entrarComoConvidado();
+          navigate("/livros");
+        }}
+        sx={{ py: 1.2, fontWeight: 500, color: "text.secondary", borderColor: "rgba(0,0,0,0.12)" }}
+      >
+        Entrar como convidado
+      </Button>
     </Box>
   );
 }

@@ -200,16 +200,19 @@ export default function Livros() {
       {loading && (
         <Grid container spacing={2.5}>
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <Grid item xs={6} sm={4} md={3} lg={2} key={i}>
+            <Grid item xs={6} sm={4} md={3} lg={2} key={i} sx={{ display: "flex" }}>
               <Box
                 sx={{
                   borderRadius: 2,
                   overflow: "hidden",
                   border: "1px solid rgba(0,0,0,0.04)",
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                <Box sx={{ pt: "140%", bgcolor: "#F3F4F6" }} />
-                <Box sx={{ p: 1.5 }}>
+                <Box sx={{ pt: "140%", bgcolor: "#F3F4F6", flexShrink: 0 }} />
+                <Box sx={{ p: 1.5, flex: 1 }}>
                   <Box sx={{ height: 14, bgcolor: "#F3F4F6", borderRadius: 1, mb: 1, width: "80%" }} />
                   <Box sx={{ height: 12, bgcolor: "#F3F4F6", borderRadius: 1, width: "60%" }} />
                 </Box>
@@ -255,7 +258,7 @@ export default function Livros() {
       {!loading && filtered.length > 0 && (
         <Grid container spacing={2.5}>
           {filtered.map((livro) => (
-            <Grid item xs={6} sm={4} md={3} lg={2} key={livro.id}>
+            <Grid item xs={6} sm={4} md={3} lg={2} key={livro.id} sx={{ display: "flex" }}>
               <BookCard
                 livro={livro}
                 onEdit={(l) => abrirModal(l)}

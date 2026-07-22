@@ -14,12 +14,16 @@ function getEmailFromToken(token) {
 }
 
 function getInitialUser() {
+  const guest = localStorage.getItem("guest") === "true";
+  if (guest) {
+    return { guest: true, token: null, role: null, nome: "Convidado", email: "" };
+  }
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const raw = localStorage.getItem("nome");
   const nome = raw && raw !== "undefined" ? raw : "";
   const email = getEmailFromToken(token);
-  return { token, role, nome, email };
+  return { guest: false, token, role, nome, email };
 }
 
 export function AuthProvider({ children }) {
@@ -39,22 +43,32 @@ export function AuthProvider({ children }) {
   }, []);
 
   function login(token, role, nome) {
+    localStorage.removeItem("guest");
     const nomeSafe = nome || "";
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
     localStorage.setItem("nome", nomeSafe);
-    setUser({ token, role, nome: nomeSafe, email: getEmailFromToken(token) });
+    setUser({ guest: false, token, role, nome: nomeSafe, email: getEmailFromToken(token) });
+  }
+
+  function entrarComoConvidado() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("nome");
+    localStorage.setItem("guest", "true");
+    setUser({ guest: true, token: null, role: null, nome: "Convidado", email: "" });
   }
 
   function sair() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("nome");
-    setUser({ token: null, role: null, nome: "", email: "" });
+    localStorage.removeItem("guest");
+    setUser({ guest: false, token: null, role: null, nome: "", email: "" });
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, sair }}>
+    <AuthContext.Provider value={{ user, login, entrarComoConvidado, sair }}>
       {children}
     </AuthContext.Provider>
   );

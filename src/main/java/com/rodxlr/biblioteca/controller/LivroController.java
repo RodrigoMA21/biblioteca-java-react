@@ -26,7 +26,6 @@ public class LivroController {
         return ResponseEntity.ok(service.salvar(livro));
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping
     public ResponseEntity<List<Livro>> listar() {
         return ResponseEntity.ok(service.listarTodos());

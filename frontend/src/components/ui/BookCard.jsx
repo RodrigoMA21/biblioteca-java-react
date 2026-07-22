@@ -1,22 +1,27 @@
-import { Box, Card, CardMedia, Typography, IconButton, Tooltip } from "@mui/material";
+import { Box, Card, CardMedia, Typography, IconButton, Tooltip, Chip } from "@mui/material";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   PictureAsPdf as PdfIcon,
   CloudUpload as UploadIcon,
   Image as ImageIcon,
+  Lock as LockIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 
 export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaUpload }) {
   const { user } = useAuth();
   const isAdmin = user.role === "ADMIN";
+  const isGuest = user.guest;
 
   return (
     <Card
       sx={{
         position: "relative",
         transition: "all 0.2s ease",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
         "&:hover": {
           boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
           transform: "translateY(-2px)",
@@ -24,7 +29,7 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
       }}
     >
       {/* Cover */}
-      <Box sx={{ position: "relative", pt: "140%", bgcolor: "#F3F4F6" }}>
+      <Box sx={{ position: "relative", pt: "140%", bgcolor: "#F3F4F6", flexShrink: 0 }}>
         {livro.capaUrl ? (
           <CardMedia
             component="img"
@@ -65,7 +70,7 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
       </Box>
 
       {/* Info */}
-      <Box sx={{ p: 1.5 }}>
+      <Box sx={{ p: 1.5, flex: 1, display: "flex", flexDirection: "column" }}>
         <Typography
           variant="body2"
           fontWeight={600}
@@ -83,8 +88,27 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
         </Typography>
 
         {/* Actions */}
-        <Box sx={{ display: "flex", gap: 0.5, mt: 0.5, flexWrap: "wrap" }}>
-          {livro.pdfUrl && (
+        <Box sx={{ display: "flex", gap: 0.5, mt: "auto", pt: 0.5, flexWrap: "wrap" }}>
+          {isGuest && livro.pdfUrl && (
+            <Chip
+              icon={<LockIcon fontSize="small" />}
+              label="Faça login"
+              size="small"
+              variant="outlined"
+              sx={{
+                fontSize: "0.65rem",
+                color: "text.disabled",
+                borderColor: "rgba(0,0,0,0.08)",
+                cursor: "pointer",
+                "&:hover": { borderColor: "primary.main", color: "primary.main" },
+              }}
+              onClick={() => {
+                localStorage.removeItem("guest");
+                window.location.href = "/login";
+              }}
+            />
+          )}
+          {!isGuest && livro.pdfUrl && (
             <Tooltip title="Abrir PDF">
               <IconButton
                 size="small"
