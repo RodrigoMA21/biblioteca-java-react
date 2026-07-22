@@ -31,6 +31,7 @@ export default function Livros() {
 
   const [livros, setLivros] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
   const [search, setSearch] = useState("");
 
   // Modal state
@@ -49,11 +50,12 @@ export default function Livros() {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   const carregarLivros = useCallback(async () => {
+    setErro("");
     try {
       const res = await api.get("/livros");
       setLivros(res.data);
     } catch {
-      setSnackbar({ open: true, message: "Erro ao carregar livros", severity: "error" });
+      setErro("Não foi possível carregar os livros. Verifique sua conexão.");
     } finally {
       setLoading(false);
     }
@@ -222,8 +224,24 @@ export default function Livros() {
         </Grid>
       )}
 
+      {/* Error state */}
+      {erro && (
+        <Box textAlign="center" py={8}>
+          <SearchIcon sx={{ fontSize: 56, color: "text.disabled", mb: 1.5 }} />
+          <Typography variant="h6" color="text.secondary" mb={0.5}>
+            {erro}
+          </Typography>
+          <Typography variant="body2" color="text.disabled" mb={2}>
+            Se você está como convidado, aguarde a atualização do servidor.
+          </Typography>
+          <Button variant="outlined" onClick={() => { setLoading(true); setErro(""); carregarLivros(); }}>
+            Tentar novamente
+          </Button>
+        </Box>
+      )}
+
       {/* Empty state */}
-      {!loading && filtered.length === 0 && (
+      {!loading && !erro && filtered.length === 0 && (
         <Box textAlign="center" py={8}>
           {search ? (
             <>

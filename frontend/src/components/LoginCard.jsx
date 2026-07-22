@@ -160,10 +160,7 @@ export default function LoginCard() {
         variant="outlined"
         size="large"
         startIcon={<PersonOutline />}
-        onClick={() => {
-          entrarComoConvidado();
-          navigate("/livros");
-        }}
+        onClick={() => entrarComoConvidado()}
         sx={{ py: 1.2, fontWeight: 500, color: "text.secondary", borderColor: "rgba(0,0,0,0.12)" }}
       >
         Entrar como convidado
