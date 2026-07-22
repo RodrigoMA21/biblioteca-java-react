@@ -23,8 +23,8 @@ export default function NotFound() {
       <Typography variant="body2" color="text.secondary" mb={3}>
         A página que você procura não existe ou foi movida.
       </Typography>
-      <Button variant="contained" onClick={() => navigate("/")}>
-        Voltar para Dashboard
+      <Button variant="contained" onClick={() => navigate("/livros")}>
+        Voltar para o Acervo
       </Button>
     </Box>
   );

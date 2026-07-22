@@ -5,7 +5,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import Dashboard from "./pages/Dashboard";
 import Livros from "./pages/Livros";
 import NotFound from "./pages/NotFound";
 
@@ -27,7 +26,7 @@ function AppContent() {
   return (
     <DashboardLayout>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Navigate to="/livros" replace />} />
         <Route path="/livros" element={<Livros />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

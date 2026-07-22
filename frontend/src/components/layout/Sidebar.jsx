@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import {
   AutoStories as BooksIcon,
-  Dashboard as DashboardIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
@@ -21,7 +20,6 @@ import { useAuth } from "../../context/AuthContext";
 const DRAWER_WIDTH = 240;
 
 const navItems = [
-  { label: "Dashboard", icon: <DashboardIcon />, path: "/" },
   { label: "Acervo", icon: <BooksIcon />, path: "/livros" },
 ];
 
@@ -141,17 +139,20 @@ export default function Sidebar({ open, onClose, mobile }) {
           borderTop: "1px solid rgba(255,255,255,0.06)",
         }}
       >
+        {user.nome && (
+          <Typography
+            sx={{
+              fontSize: "0.85rem",
+              color: "rgba(255,255,255,0.75)",
+              fontWeight: 600,
+              mb: 0.25,
+            }}
+          >
+            {user.nome}
+          </Typography>
+        )}
         <Typography
-          sx={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", mb: 0.5 }}
-        >
-          Logado como
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: "0.85rem",
-            color: "rgba(255,255,255,0.75)",
-            fontWeight: 500,
-          }}
+          sx={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}
         >
           {user.role === "ADMIN" ? "Administrador" : "Usuário"}
         </Typography>

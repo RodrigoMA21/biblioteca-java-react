@@ -6,18 +6,21 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState({
     token: localStorage.getItem("token"),
     role: localStorage.getItem("role"),
+    nome: localStorage.getItem("nome") || "",
   });
 
-  function login(token, role) {
+  function login(token, role, nome) {
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
-    setUser({ token, role });
+    localStorage.setItem("nome", nome);
+    setUser({ token, role, nome });
   }
 
   function sair() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    setUser({ token: null, role: null });
+    localStorage.removeItem("nome");
+    setUser({ token: null, role: null, nome: "" });
   }
 
   return (

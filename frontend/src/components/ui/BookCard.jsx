@@ -1,4 +1,4 @@
-import { Box, Card, CardMedia, Typography, Chip, IconButton, Tooltip } from "@mui/material";
+import { Box, Card, CardMedia, Typography, IconButton, Tooltip } from "@mui/material";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -28,7 +28,7 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
         {livro.capaUrl ? (
           <CardMedia
             component="img"
-            image={livro.capaUrl}
+            image={`${livro.capaUrl}${livro.capaUrl.includes('?') ? '&' : '?'}_=${livro.id}`}
             alt={livro.titulo}
             sx={{
               position: "absolute",
@@ -62,20 +62,6 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
           </Box>
         )}
 
-        {/* Status badge */}
-        <Chip
-          label={livro.disponivel ? "Disponível" : "Indisponível"}
-          size="small"
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            bgcolor: livro.disponivel ? "rgba(16,185,129,0.9)" : "rgba(239,68,68,0.9)",
-            color: "#fff",
-            fontSize: "0.7rem",
-            fontWeight: 600,
-          }}
-        />
       </Box>
 
       {/* Info */}

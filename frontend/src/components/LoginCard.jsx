@@ -31,9 +31,9 @@ export default function LoginCard() {
 
     try {
       const response = await api.post("/auth/login", { email, senha });
-      const { token, role } = response.data;
-      login(token, role);
-      navigate("/");
+      const { token, role, nome } = response.data;
+      login(token, role, nome);
+      navigate("/livros");
     } catch {
       setErro("Email ou senha inválidos.");
     } finally {
