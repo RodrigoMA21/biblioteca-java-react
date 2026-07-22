@@ -95,7 +95,7 @@ export default function Navbar({ onToggleSidebar }) {
                 fontWeight: 600,
               }}
             >
-              {user.nome ? user.nome.charAt(0).toUpperCase() : (user.role === "ADMIN" ? "A" : "U")}
+              {(user.nome || user.email || "").charAt(0).toUpperCase()}
             </Avatar>
           </IconButton>
 
@@ -117,7 +117,7 @@ export default function Navbar({ onToggleSidebar }) {
           >
             <Box sx={{ px: 2, py: 1 }}>
               <Typography variant="body2" fontWeight={600}>
-                {user.nome || (user.role === "ADMIN" ? "Administrador" : "Usuário")}
+                {user.nome || user.email || (user.role === "ADMIN" ? "Administrador" : "Usuário")}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {user.role === "ADMIN" ? "Administrador" : "Usuário"}

@@ -139,18 +139,16 @@ export default function Sidebar({ open, onClose, mobile }) {
           borderTop: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        {user.nome && (
-          <Typography
-            sx={{
-              fontSize: "0.85rem",
-              color: "rgba(255,255,255,0.75)",
-              fontWeight: 600,
-              mb: 0.25,
-            }}
-          >
-            {user.nome}
-          </Typography>
-        )}
+        <Typography
+          sx={{
+            fontSize: "0.85rem",
+            color: "rgba(255,255,255,0.75)",
+            fontWeight: 600,
+            mb: 0.25,
+          }}
+        >
+          {user.nome || user.email || (user.role === "ADMIN" ? "Administrador" : "Usuário")}
+        </Typography>
         <Typography
           sx={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}
         >

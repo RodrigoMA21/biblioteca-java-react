@@ -3,11 +3,23 @@ import api from "../services/api";
 
 const AuthContext = createContext(null);
 
+function getEmailFromToken(token) {
+  try {
+    const payload = token.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+    return decoded.sub || "";
+  } catch {
+    return "";
+  }
+}
+
 function getInitialUser() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
-  const nome = localStorage.getItem("nome");
-  return { token, role, nome: nome || "" };
+  const raw = localStorage.getItem("nome");
+  const nome = raw && raw !== "undefined" ? raw : "";
+  const email = getEmailFromToken(token);
+  return { token, role, nome, email };
 }
 
 export function AuthProvider({ children }) {
@@ -17,27 +29,28 @@ export function AuthProvider({ children }) {
     if (user.token && !user.nome) {
       api.get("/auth/me")
         .then((res) => {
-          const { nome, role } = res.data;
-          localStorage.setItem("nome", nome);
+          const { nome, role, email } = res.data;
+          localStorage.setItem("nome", nome || "");
           localStorage.setItem("role", role);
-          setUser((prev) => ({ ...prev, nome, role }));
+          setUser((prev) => ({ ...prev, nome: nome || "", role, email: email || prev.email }));
         })
         .catch(() => {});
     }
   }, []);
 
   function login(token, role, nome) {
+    const nomeSafe = nome || "";
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
-    localStorage.setItem("nome", nome);
-    setUser({ token, role, nome });
+    localStorage.setItem("nome", nomeSafe);
+    setUser({ token, role, nome: nomeSafe, email: getEmailFromToken(token) });
   }
 
   function sair() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("nome");
-    setUser({ token: null, role: null, nome: "" });
+    setUser({ token: null, role: null, nome: "", email: "" });
   }
 
   return (
