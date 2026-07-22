@@ -141,12 +141,15 @@ export default function Register() {
               border: "1px solid rgba(0,0,0,0.04)",
             }}
           >
-            <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", justifyContent: "center", gap: 1.5, mb: 3 }}>
-              <Box sx={{ width: 40, height: 40, borderRadius: 2, bgcolor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <BooksIcon sx={{ fontSize: 20, color: "#fff" }} />
+            <Box sx={{ display: { xs: "block", md: "none" }, textAlign: "center", mb: 3 }}>
+              <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1.5 }}>
+                <BooksIcon sx={{ fontSize: 24, color: "#fff" }} />
               </Box>
-              <Typography fontWeight={700} fontSize="1.1rem">
-                Biblioteca Digital
+              <Typography fontWeight={700} fontSize="1.1rem" sx={{ mb: 0.5 }}>
+                Biblioteca Comunitária Digital
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Acesso gratuito a livros de domínio público para estudo, pesquisa e desenvolvimento pessoal.
               </Typography>
             </Box>
 
