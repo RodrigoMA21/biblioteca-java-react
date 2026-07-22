@@ -121,6 +121,7 @@ export default function LoginCard() {
       <Box textAlign="right" mb={2.5}>
         <Link
           component="button"
+          type="button"
           variant="body2"
           onClick={() => navigate("/esqueci-senha")}
           sx={{ color: "primary.main", fontWeight: 500, cursor: "pointer" }}
