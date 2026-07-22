@@ -1,93 +1,155 @@
-import { useState } from "react"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Avatar,
-  Button,
   TextField,
+  Button,
   Box,
   Typography,
-  Paper
-} from "@mui/material"
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import api from "../services/api"
+  Link,
+  InputAdornment,
+  IconButton,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { Visibility, VisibilityOff, EmailOutlined, LockOutlined } from "@mui/icons-material";
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
-export default function LoginCard({ setUser, irCadastro }) {
-  const [email, setEmail] = useState("")
-  const [senha, setSenha] = useState("")
+export default function LoginCard() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
 
-  function fazerLogin(e) {
-    e.preventDefault()
+  async function fazerLogin(e) {
+    e.preventDefault();
+    setErro("");
+    setLoading(true);
 
-    api.post("/auth/login", { email, senha })
-      .then(response => {
-        const { token, role } = response.data
-
-        localStorage.setItem("token", token)
-        localStorage.setItem("role", role)
-
-        setUser({ token, role })
-      })
-      .catch(() => {
-        alert("Login inválido")
-      })
+    try {
+      const response = await api.post("/auth/login", { email, senha });
+      const { token, role } = response.data;
+      login(token, role);
+      navigate("/");
+    } catch {
+      setErro("Email ou senha inválidos.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <Paper
-      elevation={6}
-      sx={{
-        p: 4,
-        width: "100%",
-        maxWidth: 420,
-        bgcolor: "#2a2a2a"
-      }}
-    >
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <Avatar sx={{ bgcolor: "primary.main", mb: 1 }}>
-          <LockOutlinedIcon />
-        </Avatar>
+    <Box component="form" onSubmit={fazerLogin} width="100%">
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 700,
+          textAlign: "center",
+          mb: 0.5,
+          letterSpacing: "-0.02em",
+        }}
+      >
+        Bem-vindo
+      </Typography>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        textAlign="center"
+        mb={3}
+      >
+        Entre com sua conta para continuar
+      </Typography>
 
-        <Typography component="h1" variant="h5" mb={3}>
-          Login
-        </Typography>
+      {erro && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {erro}
+        </Alert>
+      )}
 
-        <Box component="form" onSubmit={fazerLogin} width="100%">
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
+      <TextField
+        fullWidth
+        label="Email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        sx={{ mb: 2 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <EmailOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
+            </InputAdornment>
+          ),
+        }}
+      />
 
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Senha"
-            type="password"
-            value={senha}
-            onChange={e => setSenha(e.target.value)}
-          />
+      <TextField
+        fullWidth
+        label="Senha"
+        type={mostrarSenha ? "text" : "password"}
+        value={senha}
+        onChange={(e) => setSenha(e.target.value)}
+        required
+        sx={{ mb: 0.5 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <LockOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+                edge="end"
+                size="small"
+              >
+                {mostrarSenha ? (
+                  <VisibilityOff fontSize="small" />
+                ) : (
+                  <Visibility fontSize="small" />
+                )}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Entrar
-          </Button>
-
-          <Button
-            fullWidth
-            variant="text"
-            onClick={irCadastro}
-          >
-            Criar conta
-          </Button>
-        </Box>
+      <Box textAlign="right" mb={2.5}>
+        <Link
+          component="button"
+          variant="body2"
+          onClick={() => navigate("/esqueci-senha")}
+          sx={{ color: "primary.main", fontWeight: 500, cursor: "pointer" }}
+        >
+          Esqueceu sua senha?
+        </Link>
       </Box>
-    </Paper>
-  )
+
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        size="large"
+        disabled={loading}
+        sx={{ py: 1.2, mb: 2, fontWeight: 600 }}
+      >
+        {loading ? <CircularProgress size={22} color="inherit" /> : "Entrar"}
+      </Button>
+
+      <Typography variant="body2" textAlign="center" color="text.secondary">
+        Não tem uma conta?{" "}
+        <Link
+          component="button"
+          onClick={() => navigate("/cadastro")}
+          sx={{ fontWeight: 600, cursor: "pointer" }}
+        >
+          Criar conta
+        </Link>
+      </Typography>
+    </Box>
+  );
 }

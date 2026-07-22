@@ -1,0 +1,4 @@
+-- Migration: Adicionar colunas reset_token e reset_token_expiry à tabela usuario
+-- Execute no seu banco PostgreSQL (Neon)
+-- ALTER TABLE usuario ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255);
+-- ALTER TABLE usuario ADD COLUMN IF NOT EXISTS reset_token_expiry TIMESTAMP;

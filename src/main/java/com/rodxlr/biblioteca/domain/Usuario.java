@@ -2,6 +2,7 @@ package com.rodxlr.biblioteca.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
@@ -23,4 +24,12 @@ public class Usuario {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER; // default USER
+
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
+
+    public boolean isResetTokenValid() {
+        return resetToken != null && resetTokenExpiry != null && LocalDateTime.now().isBefore(resetTokenExpiry);
+    }
 }

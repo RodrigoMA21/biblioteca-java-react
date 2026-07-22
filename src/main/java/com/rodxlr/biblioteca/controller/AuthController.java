@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -39,5 +41,27 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getRole()));
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        try {
+            service.gerarResetToken(email);
+            return ResponseEntity.ok(Map.of("message", "Se o email existir, você receberá instruções de recuperação."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(Map.of("message", "Se o email existir, você receberá instruções de recuperação."));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> body) {
+        String token = body.get("token");
+        String novaSenha = body.get("senha");
+        try {
+            service.resetarSenha(token, novaSenha);
+            return ResponseEntity.ok(Map.of("message", "Senha redefinida com sucesso!"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
+        }
+    }
 
 }

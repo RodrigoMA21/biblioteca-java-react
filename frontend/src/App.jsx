@@ -1,31 +1,46 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import DashboardLayout from "./components/layout/DashboardLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Biblioteca from "./pages/Biblioteca";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Dashboard from "./pages/Dashboard";
+import Livros from "./pages/Livros";
+import NotFound from "./pages/NotFound";
 
-function App() {
-  const [user, setUser] = useState({
-    token: localStorage.getItem("token"),
-    role: localStorage.getItem("role")
-  });
-
-  const [telaCadastro, setTelaCadastro] = useState(false);
-
-  function sair() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setUser({ token: null, role: null });
-  }
+function AppContent() {
+  const { user } = useAuth();
 
   if (!user.token) {
-    return telaCadastro ? (
-      <Register onRegisterSuccess={() => setTelaCadastro(false)} />
-    ) : (
-      <Login setUser={setUser} irCadastro={() => setTelaCadastro(true)} />
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Register />} />
+        <Route path="/esqueci-senha" element={<ForgotPassword />} />
+        <Route path="/resetar-senha" element={<ResetPassword />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     );
   }
 
-  return <Biblioteca user={user} sair={sair} />;
+  return (
+    <DashboardLayout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/livros" element={<Livros />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </DashboardLayout>
+  );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}

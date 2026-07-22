@@ -8,7 +8,7 @@ api.interceptors.request.use(config => {
   const token = localStorage.getItem("token");
 
   // Adiciona token só se existir e se não for registro/login
-  if (token && !config.url?.includes("/auth/register") && !config.url?.includes("/auth/login")) {
+  if (token && !config.url?.includes("/auth/register") && !config.url?.includes("/auth/login") && !config.url?.includes("/auth/forgot-password") && !config.url?.includes("/auth/reset-password")) {
     config.headers.Authorization = `Bearer ${token}`;
   }
 

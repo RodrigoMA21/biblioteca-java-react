@@ -1,52 +1,132 @@
-import { Grid, Box, Typography, Container } from "@mui/material"
-import LoginCard from "../components/LoginCard"
+import { Box, Container, Typography, Paper } from "@mui/material";
+import { AutoStories as BooksIcon } from "@mui/icons-material";
+import LoginCard from "../components/LoginCard";
 
-export default function Login({ setUser, irCadastro }) {
+export default function Login() {
   return (
-    <Grid container minHeight="100vh" bgcolor="#121212">
-      {/* TEXTO */}
-      <Grid
-        item
-        xs={12}
-        md={6}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        px={6}
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        bgcolor: "#F8F9FC",
+      }}
+    >
+      {/* Left - Branding */}
+      <Box
+        sx={{
+          flex: 1,
+          display: { xs: "none", md: "flex" },
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "#0F172A",
+          color: "#fff",
+          p: 6,
+          position: "relative",
+          overflow: "hidden",
+        }}
       >
-        <Box maxWidth={500}>
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
-            📚 Biblioteca Comunitária Digital 
+        <Box
+          sx={{
+            position: "absolute",
+            top: "-50%",
+            right: "-30%",
+            width: "600px",
+            height: "600px",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%)",
+          }}
+        />
+        <Box sx={{ position: "relative", zIndex: 1, maxWidth: 440, textAlign: "center" }}>
+          <Box
+            sx={{
+              width: 64,
+              height: 64,
+              borderRadius: 3,
+              bgcolor: "#4F46E5",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mb: 3,
+              mx: "auto",
+            }}
+          >
+            <BooksIcon sx={{ fontSize: 32, color: "#fff" }} />
+          </Box>
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: 700,
+              mb: 1.5,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.2,
+            }}
+          >
+            Biblioteca Comunitária Digital
           </Typography>
-
-          <Typography variant="h6" color="text.secondary" paragraph>
-            Acesso gratuito a livros de domínio público para estudo,
-            pesquisa e desenvolvimento pessoal.
-          </Typography>
-
-          <Typography variant="body1" color="text.secondary">
-            Um projeto open-source criado para fortalecer a comunidade
-            e democratizar o conhecimento por meio da tecnologia.
+          <Typography
+            sx={{
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "1.05rem",
+              lineHeight: 1.6,
+            }}
+          >
+            Acesso gratuito a livros de domínio público para estudo, pesquisa e desenvolvimento pessoal.
           </Typography>
         </Box>
-      </Grid>
+      </Box>
 
-      {/* LOGIN */}
-      <Grid
-        item
-        xs={12}
-        md={6}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
+      {/* Right - Login Form */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 3,
+        }}
       >
-        <Container maxWidth="sm">
-          <LoginCard
-            setUser={setUser}
-            irCadastro={irCadastro}
-          />
+        <Container maxWidth="xs">
+          <Paper
+            sx={{
+              p: 4,
+              borderRadius: 3,
+              boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
+              border: "1px solid rgba(0,0,0,0.04)",
+            }}
+          >
+            {/* Mobile logo */}
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1.5,
+                mb: 3,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 2,
+                  bgcolor: "#4F46E5",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <BooksIcon sx={{ fontSize: 20, color: "#fff" }} />
+              </Box>
+              <Typography fontWeight={700} fontSize="1.1rem">
+                Biblioteca Digital
+              </Typography>
+            </Box>
+
+            <LoginCard />
+          </Paper>
         </Container>
-      </Grid>
-    </Grid>
-  )
+      </Box>
+    </Box>
+  );
 }
