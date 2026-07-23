@@ -129,143 +129,148 @@ export default function Register() {
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          p: 3,
         }}
       >
-        <Container maxWidth="xs">
-          <Paper
-            sx={{
-              p: 4,
-              borderRadius: 3,
-              boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
-              border: "1px solid rgba(0,0,0,0.04)",
-            }}
-          >
-            <Box sx={{ display: { xs: "block", md: "none" }, textAlign: "center", mb: 3 }}>
-              <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1.5 }}>
-                <BooksIcon sx={{ fontSize: 24, color: "#fff" }} />
-              </Box>
-              <Typography fontWeight={700} fontSize="1.1rem" sx={{ mb: 0.5 }}>
-                Biblioteca Comunitária Digital
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Acesso gratuito a livros de domínio público para estudo, pesquisa e desenvolvimento pessoal.
-              </Typography>
-            </Box>
-
-            <Typography
-              variant="h4"
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 3,
+          }}
+        >
+          <Container maxWidth="xs">
+            <Paper
               sx={{
-                fontWeight: 700,
-                textAlign: "center",
-                mb: 0.5,
-                letterSpacing: "-0.02em",
+                p: 4,
+                borderRadius: 3,
+                boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
+                border: "1px solid rgba(0,0,0,0.04)",
               }}
             >
-              Criar conta
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              textAlign="center"
-              mb={3}
-            >
-              Preencha os dados para se cadastrar
-            </Typography>
+              <Box sx={{ display: { xs: "block", md: "none" }, textAlign: "center", mb: 3 }}>
+                <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center", mx: "auto", mb: 1.5 }}>
+                  <BooksIcon sx={{ fontSize: 24, color: "#fff" }} />
+                </Box>
+                <Typography fontWeight={700} fontSize="1.1rem" sx={{ mb: 0.5 }}>
+                  Biblioteca Comunitária Digital
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Acesso gratuito a livros de domínio público para estudo, pesquisa e desenvolvimento pessoal.
+                </Typography>
+              </Box>
 
-            {erro && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {erro}
-              </Alert>
-            )}
-
-            <Box component="form" onSubmit={cadastrar} width="100%">
-              <TextField
-                fullWidth
-                label="Nome"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                required
-                sx={{ mb: 2 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
-                    </InputAdornment>
-                  ),
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                  textAlign: "center",
+                  mb: 0.5,
+                  letterSpacing: "-0.02em",
                 }}
-              />
-              <TextField
-                fullWidth
-                label="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                sx={{ mb: 2 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                fullWidth
-                label="Senha"
-                type={mostrarSenha ? "text" : "password"}
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setMostrarSenha(!mostrarSenha)}
-                        edge="end"
-                        size="small"
-                      >
-                        {mostrarSenha ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ mb: 3 }}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={loading}
-                sx={{ py: 1.2, mb: 2, fontWeight: 600 }}
               >
-                {loading ? <CircularProgress size={22} color="inherit" /> : "Criar conta"}
-              </Button>
-              <Typography variant="body2" textAlign="center" color="text.secondary">
-                Já tem uma conta?{" "}
-                <Link
-                  component="button"
-                  onClick={() => navigate("/login")}
-                  sx={{ fontWeight: 600, cursor: "pointer" }}
-                >
-                  Fazer login
-                </Link>
+                Criar conta
               </Typography>
-            </Box>
-          </Paper>
-        </Container>
-        <Box sx={{ mt: "auto", width: "100%" }}>
-          <Footer />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+                mb={3}
+              >
+                Preencha os dados para se cadastrar
+              </Typography>
+
+              {erro && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {erro}
+                </Alert>
+              )}
+
+              <Box component="form" onSubmit={cadastrar} width="100%">
+                <TextField
+                  fullWidth
+                  label="Nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                  sx={{ mb: 2 }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  sx={{ mb: 2 }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Senha"
+                  type={mostrarSenha ? "text" : "password"}
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOutlined sx={{ fontSize: 20, color: "text.disabled" }} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setMostrarSenha(!mostrarSenha)}
+                          edge="end"
+                          size="small"
+                        >
+                          {mostrarSenha ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ mb: 3 }}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  disabled={loading}
+                  sx={{ py: 1.2, mb: 2, fontWeight: 600 }}
+                >
+                  {loading ? <CircularProgress size={22} color="inherit" /> : "Criar conta"}
+                </Button>
+                <Typography variant="body2" textAlign="center" color="text.secondary">
+                  Já tem uma conta?{" "}
+                  <Link
+                    component="button"
+                    onClick={() => navigate("/login")}
+                    sx={{ fontWeight: 600, cursor: "pointer" }}
+                  >
+                    Fazer login
+                  </Link>
+                </Typography>
+              </Box>
+            </Paper>
+          </Container>
         </Box>
+        <Footer />
       </Box>
     </Box>
   );
