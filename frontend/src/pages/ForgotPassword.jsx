@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { EmailOutlined, ArrowBack, LockReset } from "@mui/icons-material";
 import api from "../services/api";
+import Footer from "../components/layout/Footer";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ export default function ForgotPassword() {
       sx={{
         minHeight: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "#F8F9FC",
@@ -132,6 +134,9 @@ export default function ForgotPassword() {
           </Box>
         </Paper>
       </Container>
+      <Box sx={{ mt: "auto", width: "100%" }}>
+        <Footer />
+      </Box>
     </Box>
   );
 }

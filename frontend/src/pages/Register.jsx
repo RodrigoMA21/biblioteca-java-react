@@ -22,6 +22,7 @@ import {
   AutoStories as BooksIcon,
 } from "@mui/icons-material";
 import api from "../services/api";
+import Footer from "../components/layout/Footer";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -127,6 +128,7 @@ export default function Register() {
         sx={{
           flex: 1,
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           p: 3,
@@ -261,6 +263,9 @@ export default function Register() {
             </Box>
           </Paper>
         </Container>
+        <Box sx={{ mt: "auto", width: "100%" }}>
+          <Footer />
+        </Box>
       </Box>
     </Box>
   );

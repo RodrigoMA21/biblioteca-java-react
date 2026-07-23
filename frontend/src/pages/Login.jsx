@@ -1,6 +1,7 @@
 import { Box, Container, Typography, Paper } from "@mui/material";
 import { AutoStories as BooksIcon } from "@mui/icons-material";
 import LoginCard from "../components/LoginCard";
+import Footer from "../components/layout/Footer";
 
 export default function Login() {
   return (
@@ -81,6 +82,7 @@ export default function Login() {
         sx={{
           flex: 1,
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           p: 3,
@@ -134,6 +136,9 @@ export default function Login() {
             <LoginCard />
           </Paper>
         </Container>
+        <Box sx={{ mt: "auto", width: "100%" }}>
+          <Footer />
+        </Box>
       </Box>
     </Box>
   );

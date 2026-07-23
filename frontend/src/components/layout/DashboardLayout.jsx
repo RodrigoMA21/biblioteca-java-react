@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import Footer from "./Footer";
 
 const DRAWER_WIDTH = 240;
 
@@ -41,6 +42,7 @@ export default function DashboardLayout({ children }) {
         >
           {children}
         </Box>
+        <Footer />
       </Box>
     </Box>
   );

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { LockOutlined, Visibility, VisibilityOff, LockReset } from "@mui/icons-material";
 import api from "../services/api";
+import Footer from "../components/layout/Footer";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function ResetPassword() {
 
   if (!token) {
     return (
-      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "#F8F9FC", p: 3 }}>
+      <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", bgcolor: "#F8F9FC", p: 3 }}>
         <Container maxWidth="xs">
           <Paper sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -41,6 +42,9 @@ export default function ResetPassword() {
             </Button>
           </Paper>
         </Container>
+        <Box sx={{ mt: "auto", width: "100%" }}>
+          <Footer />
+        </Box>
       </Box>
     );
   }
@@ -80,6 +84,7 @@ export default function ResetPassword() {
       sx={{
         minHeight: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "#F8F9FC",
@@ -194,6 +199,9 @@ export default function ResetPassword() {
           </Box>
         </Paper>
       </Container>
+      <Box sx={{ mt: "auto", width: "100%" }}>
+        <Footer />
+      </Box>
     </Box>
   );
 }

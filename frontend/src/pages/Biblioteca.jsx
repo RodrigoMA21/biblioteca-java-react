@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
+import Footer from "../components/layout/Footer";
+
 function Biblioteca({ user, sair }) {
   const [livros, setLivros] = useState([]);
   const [titulo, setTitulo] = useState("");
@@ -220,6 +222,7 @@ function Biblioteca({ user, sair }) {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 }
