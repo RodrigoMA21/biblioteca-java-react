@@ -64,11 +64,22 @@ export default function Navbar({ onToggleSidebar }) {
               variant="contained"
               size="small"
               startIcon={<LoginIcon />}
+              disabled
               onClick={() => {
                 sair();
                 navigate("/login");
               }}
-              sx={{ borderRadius: 2, fontSize: "0.8rem", px: 1.5, py: 0.5 }}
+              sx={{
+                borderRadius: 2,
+                fontSize: "0.8rem",
+                px: 1.5,
+                py: 0.5,
+                "&.Mui-disabled": {
+                  opacity: 0.5,
+                  backgroundColor: "rgba(0,0,0,0.12)",
+                  color: "rgba(0,0,0,0.38)",
+                },
+              }}
             >
               Fazer login
             </Button>
