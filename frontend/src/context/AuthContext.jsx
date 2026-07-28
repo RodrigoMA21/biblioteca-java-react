@@ -14,10 +14,6 @@ function getEmailFromToken(token) {
 }
 
 function getInitialUser() {
-  const guest = localStorage.getItem("guest") === "true";
-  if (guest) {
-    return { guest: true, token: null, role: null, nome: "Convidado", email: "" };
-  }
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const raw = localStorage.getItem("nome");

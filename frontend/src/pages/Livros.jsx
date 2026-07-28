@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   Box,
   Grid,
@@ -49,15 +49,27 @@ export default function Livros() {
   // Snackbar
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
+  const tentativas = useRef(0);
+  const MAX_TENTATIVAS = 3;
+
   const carregarLivros = useCallback(async () => {
     setErro("");
     try {
       const res = await api.get("/livros");
       setLivros(res.data);
+      tentativas.current = 0;
     } catch {
-      setErro("Não foi possível carregar os livros. Verifique sua conexão.");
+      tentativas.current += 1;
+      if (tentativas.current < MAX_TENTATIVAS) {
+        setTimeout(() => carregarLivros(), tentativas.current * 2000);
+      } else {
+        setErro("Não foi possível carregar os livros. Verifique sua conexão.");
+        tentativas.current = 0;
+      }
     } finally {
-      setLoading(false);
+      if (tentativas.current === 0) {
+        setLoading(false);
+      }
     }
   }, []);
 
