@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import Login from "./pages/Login";
@@ -37,10 +37,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <Router>
+    <HashRouter>
       <AuthProvider>
         <AppContent />
       </AuthProvider>
-    </Router>
+    </HashRouter>
   );
 }
