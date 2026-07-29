@@ -7,13 +7,11 @@ import {
   Image as ImageIcon,
   Lock as LockIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const sessao = Date.now();
 
 export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaUpload }) {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const isAdmin = user.role === "ADMIN";
   const isGuest = user.guest;
@@ -100,16 +98,9 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
               label="Faça login"
               size="small"
               variant="outlined"
+              disabled
               sx={{
                 fontSize: "0.65rem",
-                color: "text.disabled",
-                borderColor: "rgba(0,0,0,0.08)",
-                cursor: "pointer",
-                "&:hover": { borderColor: "primary.main", color: "primary.main" },
-              }}
-              onClick={() => {
-                localStorage.removeItem("guest");
-                navigate("/login");
               }}
             />
           )}
