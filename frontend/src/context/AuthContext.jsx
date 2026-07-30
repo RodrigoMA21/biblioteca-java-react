@@ -14,7 +14,7 @@ function getEmailFromToken(token) {
 }
 
 function getInitialUser() {
-  const guest = localStorage.getItem("guest") === "true";
+  const guest = sessionStorage.getItem("guest") === "true";
   if (guest) {
     return { guest: true, token: null, role: null, nome: "Convidado", email: "" };
   }
@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   function login(token, role, nome) {
-    localStorage.removeItem("guest");
+    sessionStorage.removeItem("guest");
     const nomeSafe = nome || "";
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("nome");
-    localStorage.setItem("guest", "true");
+    sessionStorage.setItem("guest", "true");
     setUser({ guest: true, token: null, role: null, nome: "Convidado", email: "" });
   }
 
@@ -63,7 +63,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("nome");
-    localStorage.removeItem("guest");
+    sessionStorage.removeItem("guest");
     setUser({ guest: false, token: null, role: null, nome: "", email: "" });
   }
 
