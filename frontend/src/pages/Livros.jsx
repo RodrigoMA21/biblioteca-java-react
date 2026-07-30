@@ -50,7 +50,7 @@ export default function Livros() {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   const tentativas = useRef(0);
-  const MAX_TENTATIVAS = 3;
+  const MAX_TENTATIVAS = 6;
 
   const carregarLivros = useCallback(async () => {
     setErro("");
@@ -58,16 +58,14 @@ export default function Livros() {
       const res = await api.get("/livros");
       setLivros(res.data);
       tentativas.current = 0;
+      setLoading(false);
     } catch {
       tentativas.current += 1;
       if (tentativas.current < MAX_TENTATIVAS) {
-        setTimeout(() => carregarLivros(), tentativas.current * 2000);
+        setTimeout(() => carregarLivros(), tentativas.current * 5000);
       } else {
-        setErro("Não foi possível carregar os livros. Verifique sua conexão.");
+        setErro("Não foi possível carregar os livros. O servidor pode estar iniciando. Tente novamente.");
         tentativas.current = 0;
-      }
-    } finally {
-      if (tentativas.current === 0) {
         setLoading(false);
       }
     }

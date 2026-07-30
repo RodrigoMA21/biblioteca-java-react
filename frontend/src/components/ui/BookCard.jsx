@@ -9,8 +9,6 @@ import {
 } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 
-const sessao = Date.now();
-
 export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaUpload }) {
   const { user } = useAuth();
   const isAdmin = user.role === "ADMIN";
@@ -36,7 +34,7 @@ export default function BookCard({ livro, onEdit, onDelete, onPdfUpload, onCapaU
         {livro.capaUrl ? (
           <CardMedia
             component="img"
-            image={`${livro.capaUrl}${livro.capaUrl.includes('?') ? '&' : '?'}_=${livro.id}&s=${sessao}`}
+            image={livro.capaUrl}
             alt={livro.titulo}
             sx={{
               position: "absolute",

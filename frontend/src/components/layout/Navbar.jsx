@@ -64,7 +64,7 @@ export default function Navbar({ onToggleSidebar }) {
               variant="contained"
               size="small"
               startIcon={<LoginIcon />}
-              onClick={() => navigate("/login")}
+              onClick={() => { sair(); navigate("/login"); }}
               sx={{
                 borderRadius: 2,
                 fontSize: "0.8rem",
